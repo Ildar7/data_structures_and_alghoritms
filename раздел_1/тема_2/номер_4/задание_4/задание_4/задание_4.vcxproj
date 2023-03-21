@@ -129,6 +129,11 @@
   <ItemGroup>
     <ClCompile Include="задание_4.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="second.h" />
+    <ClInclude Include="Stack.h" />
+    <ClInclude Include="Stack_methods.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -1,163 +1,94 @@
-﻿#include <iostream>
-#include <clocale>
-#include <cstdlib>
-#include <ctime>
-#include <stack>
+﻿#include "second.h"
 
-class Stack {
+int fail() {
+    int a;
+    while (!(cin >> a) || (cin.peek() != '\n'))
+    {
+        cin.clear();
+        while (cin.get() != '\n');
+        cout << "\n Ошибка! Попробуйте снова" << endl;
+    }
+    return a;
+}
 
-    public:
-        std::stack<int> mainStack;
-        std::stack<int> deletedStack;
+void menu()
+{
+    int console_command_number, value, auxiliary_console_command_number;
+    while (true)
+    {
+        cout << "\nВведите номер команды: " << endl;
+        cout << "1. Вывести текущее состояние стека в консоль" << endl;
+        cout << "2. Добавить элемент в стек" << endl;
+        cout << "3. Добавить несколько элементов в стек" << endl;
+        cout << "4. Удалить элемент из стек" << endl;
+        cout << "5. Выполнить проверку пустоты стек" << endl;
+        cout << "6. Вывести текущее состояние вспомогательного стек в консоль" << endl;
+        cout << "7. Конец программы" << endl;
+        cout << "Что делаем: ";
+        console_command_number = fail();
 
-        bool isEmpty() {
-            return mainStack.empty();
+        if (console_command_number == 1) {
+            cout << "Текущее состояние стека" << endl;
+            show(sp);
         }
-
-        void push(int data) {
-            mainStack.push(data);
-        }
-
-        void pushMultiple(int count) {
-            srand(time(nullptr));
-            for (int i = 0; i < count; i++) {
-                push(rand());
+        else if (console_command_number == 2) {
+            cout << "1. Создание нового элемента" << endl;
+            cout << "2. Выбор его с вершины вспомогательного стека" << endl;
+            cout << "Выберите вариант добавления: " << endl;
+            auxiliary_console_command_number = fail();
+            if (auxiliary_console_command_number == 1) {
+                cout << "Добавить элемент в стек" << endl;
+                cout << "Введите элемент: ";
+                value = fail();
+                sp = push(sp, value);
             }
-        }
-
-        int pop() {
-            if (isEmpty()) {
-                std::cout << "Стек пуст, нечего удалять!" << std::endl;
-                return -1;
-            }
-            int data = mainStack.top();
-            mainStack.pop();
-            return data;
-        }
-
-        void deleteElement() {
-            int popChoice;
-            std::cout << "Выберите действие с удаленным элементом:" << std::endl;
-            std::cout << "1. Удалить с освобождением памяти" << std::endl;
-            std::cout << "2. Добавить в стек удаленных элементов" << std::endl;
-            std::cin >> popChoice;
-            if (popChoice == 1) {
-                mainStack.pop();
-            }
-            else if (popChoice == 2) {
-                int poppedValue = mainStack.top();
-                mainStack.pop();
-                deletedStack.push(poppedValue);
-            }
-        }
-
-        void display() {
-            if (isEmpty()) {
-                std::cout << "Стек пуст" << std::endl;
-                return;
-            }
-            std::cout << "Элементы стека: ";
-            std::stack<int> tmpStack;
-            while (!mainStack.empty()) {
-                tmpStack.push(mainStack.top());
-                mainStack.pop();
-            }
-            while (!tmpStack.empty()) {
-                std::cout << tmpStack.top() << " ";
-                mainStack.push(tmpStack.top());
-                tmpStack.pop();
-            }
-            std::cout << std::endl;
-        }
-
-        void displayDeleted() {
-            if (deletedStack.empty()) {
-                std::cout << "Стек удаленных элементов пуст" << std::endl;
-                return;
-            }
-            std::cout << "Элементы стека удаленных элементов: ";
-            std::stack<int> tmpStack;
-            while (!deletedStack.empty()) {
-                tmpStack.push(deletedStack.top());
-                deletedStack.pop();
-            }
-            while (!tmpStack.empty()) {
-                std::cout << tmpStack.top() << " ";
-                deletedStack.push(tmpStack.top());
-                tmpStack.pop();
-            }
-            std::cout << std::endl;
-        }
-
-        int size() {
-            return mainStack.size();
-        }
-};
-
-int main() {
-    setlocale(LC_ALL, "Russian");
-    std::srand(std::time(nullptr));
-    Stack stack;
-    int choice;
-
-    while (true) {
-        std::cout << "1. Добавить элемент" << std::endl;
-        std::cout << "2. Добавить несколько элементов в стек" << std::endl;
-        std::cout << "3. Удалить элемент" << std::endl;
-        std::cout << "4. Вывести содержимое стека" << std::endl;
-        std::cout << "5. Вывести содержимое стека удаленных элементов" << std::endl;
-        std::cout << "6. Выйти" << std::endl;
-        std::cout << "Выберите действие: ";
-        std::cin >> choice;
-        std::cin.ignore();
-
-        switch (choice) {
-        case 1:
-            int data, originChoice;
-
-            std::cout << "Выберите происхождение элемента:" << std::endl;
-            std::cout << "1. Создать новый элемент" << std::endl;
-            std::cout << "2. Выбрать из стека удаленных элементов" << std::endl;
-            std::cin >> originChoice;
-            if (originChoice == 2 && !stack.deletedStack.empty()) {
-                // берем верхний элемент из удаленного стека и помещаем его в основной стек
-                data = stack.deletedStack.top();
-                stack.deletedStack.pop();
-                stack.mainStack.push(data); // добавляем элемент в основной стек
+            else if (auxiliary_console_command_number == 2) {
+                add_from_second();
             }
             else {
-                std::cout << "Введите значение нового элемента: ";
-                std::cin >> data;
-                stack.push(data);
+                cout << "Ошибка, повторите попытку" << endl;
             }
-            break;
-        case 2:
-            int count;
-            std::cout << "Введите кол-во добавляемых элементов: ";
-            std::cin >> count;
-            stack.pushMultiple(count);
-            break;
-        case 3:
-            if (stack.isEmpty()) {
-                std::cout << "Стек пуст, нечего удалять!" << std::endl;
+        }
+        else if (console_command_number == 3) {
+            pushRand();
+        }
+        else if (console_command_number == 4) {
+            cout << "1. Удалить элемент с освобождением памяти" << endl;
+            cout << "2. Включить его в вершину вспомогательного стека удаленных элементов" << endl;
+            cout << "Выберите вид удаления: ";
+            auxiliary_console_command_number = fail();
+            if (auxiliary_console_command_number == 1) {
+                pop();
+            }
+            else if (auxiliary_console_command_number == 2) {
+                MoveToSecondStack();
             }
             else {
-                stack.deleteElement();
+                cout << "Ошибка, повторите попытку" << endl;
             }
+        }
+        else if (console_command_number == 5) {
+            isEmpty(sp);
+        }
+        else if (console_command_number == 6) {
+            cout << "Текущее состояние  вспомогательного стека" << endl;
+            show(sp_auxiliary);
+        }
+        else if (console_command_number == 7) {
             break;
-        case 4:
-            stack.display();
-            break;
-        case 5:
-            stack.displayDeleted();
-            break;
-        case 6:
-            exit(0);
-        default:
-            std::cout << "Некорректный выбор!" << std::endl;
-            break;
+        }
+        else {
+            cout << "Ошибка, попробуйте снова" << endl;
         }
     }
+}
 
+
+int main()
+{
+    setlocale(LC_ALL, "Russian");
+    init();
+    srand(static_cast<unsigned int> (time(0)));
+    menu();
     return 0;
 }
